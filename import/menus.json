@@ -1,0 +1,37 @@
+[
+    {
+        "name": "Nasi Goreng Telur Sosis",
+        "description": "Nasi goreng dengan telur dan sosis.",
+        "imageUrl": "https://storage.googleapis.com/ppl-menu/nasi-goreng-telur-sosis.jpg",
+        "stock": 50,
+        "isActive": true
+    },
+    {
+        "name": "Nasi Ikan Semur",
+        "description": "Nasi dengan ikan semur dan semangka.",
+        "imageUrl": "https://storage.googleapis.com/ppl-menu/nasi-ikan-semur-semangka.jpg",
+        "stock": 30,
+        "isActive": true
+    },
+    {
+        "name": "Nasi Kuning Ayam Goreng",
+        "description": "Nasi kuning dengan ayam.",
+        "imageUrl": "https://storage.googleapis.com/ppl-menu/nasi-kuning-ayam.jpg",
+        "stock": 30,
+        "isActive": true
+    },
+    {
+        "name": "Nasi Telur Tempe Kacang",
+        "description": "Nasi dengan telur, tempe, dan kacang.",
+        "imageUrl": "https://storage.googleapis.com/ppl-menu/nasi-telur-tempe-kacang.jpg",
+        "stock": 40,
+        "isActive": true
+    },
+    {
+        "name": "Siomay Ikan",
+        "description": "Siomay dengan isian ikan.",
+        "imageUrl": "https://storage.googleapis.com/ppl-menu/siomay-ikan.jpeg",
+        "stock": 25,
+        "isActive": true
+    }
+]

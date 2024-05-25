@@ -1,52 +1,46 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const fs = require('fs');
+const Student = require('../models/Student');
+const Staff = require('../models/Staff');
+const studentsData = require('./students.json');
+const staffsData = require('./staffs.json');
 const dotenv = require('dotenv');
 
 dotenv.config();
 
-const Student = require('../models/Student');
-const Staff = require('../models/Staff');
+mongoose.connect(process.env.MONGO_URI, {
+});
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => {
-        console.log('MongoDB connected');
-        importData();
-    })
-    .catch((err) => {
-        console.error('MongoDB connection error:', err);
-        process.exit(1);
-    });
-
-// Function to import data
 const importData = async () => {
     try {
-        // Read student data from JSON file
-        const studentData = JSON.parse(fs.readFileSync('students.json', 'utf-8'));
-        // Encrypt passwords and save students to database
-        for (let student of studentData) {
-            const salt = await bcrypt.genSalt(10);
-            student.password = await bcrypt.hash(student.password, salt);
-            const newStudent = new Student(student);
-            await newStudent.save();
-        }
-        console.log('Student data imported successfully');
+        // Import students
+        await Student.deleteMany();
+        const salt = await bcrypt.genSalt(10);
+        const hashedPasswords = await Promise.all(
+            studentsData.map(async (student) => {
+                const hashedPassword = await bcrypt.hash(student.password, salt);
+                return { ...student, password: hashedPassword };
+            })
+        );
+        await Student.insertMany(hashedPasswords);
+        console.log('Students imported successfully');
 
-        // Read staff data from JSON file
-        const staffData = JSON.parse(fs.readFileSync('staffs.json', 'utf-8'));
-        // Encrypt passwords and save staff to database
-        for (let staff of staffData) {
-            const salt = await bcrypt.genSalt(10);
-            staff.password = await bcrypt.hash(staff.password, salt);
-            const newStaff = new Staff(staff);
-            await newStaff.save();
-        }
-        console.log('Staff data imported successfully');
+        // Import staffs
+        await Staff.deleteMany();
+        const hashedStaffs = await Promise.all(
+            staffsData.map(async (staff) => {
+                const hashedPassword = await bcrypt.hash(staff.password, salt);
+                return { ...staff, password: hashedPassword };
+            })
+        );
+        await Staff.insertMany(hashedStaffs);
+        console.log('Staffs imported successfully');
 
-        process.exit();
-    } catch (err) {
-        console.error('Error importing data:', err);
+        process.exit(0);
+    } catch (error) {
+        console.error('Error importing data:', error);
         process.exit(1);
     }
 };
+
+importData();
