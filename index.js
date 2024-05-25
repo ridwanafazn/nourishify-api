@@ -23,8 +23,8 @@ mongoose.connect(process.env.MONGO_URI)
 // Routes
 app.use('/api/students', require('./routes/studentRoutes'));
 app.use('/api/staff', require('./routes/staffRoutes'));
-app.use('/api/menus', require('./routes/menuRoutes'));
-app.use('/api/orders', require('./routes/orderRoutes'));
+// app.use('/api/menus', require('./routes/menuRoutes'));
+// app.use('/api/orders', require('./routes/orderRoutes'));
 
 // Placeholder route
 app.get('/', (req, res) => {

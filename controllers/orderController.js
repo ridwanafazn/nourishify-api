@@ -2,15 +2,15 @@ const Order = require('../models/Order');
 const Student = require('../models/Student');
 const Menu = require('../models/Menu');
 
+// Claim order
 exports.claimOrder = async (req, res) => {
-    const { menuId } = req.body;
-
     try {
         const student = await Student.findById(req.user.id);
         if (student.claimedToday) {
-            return res.status(400).json({ msg: 'Order already claimed today' });
+            return res.status(400).json({ msg: 'You have already claimed an order today' });
         }
 
+        const { menuId } = req.body;
         const menu = await Menu.findById(menuId);
         if (!menu) {
             return res.status(404).json({ msg: 'Menu not found' });
@@ -20,28 +20,30 @@ exports.claimOrder = async (req, res) => {
             return res.status(400).json({ msg: 'Menu out of stock' });
         }
 
+        menu.stock -= 1;
+        student.claimedToday = true;
+        await menu.save();
+        await student.save();
+
         const order = new Order({
-            user: req.user.id,
-            menu: menuId,
+            student: student.id,
+            menu: menu.id,
+            status: 'claimed'
         });
 
-        student.claimedToday = true;
-        menu.stock -= 1;
-
-        await student.save();
-        await menu.save();
         await order.save();
 
-        res.json({ msg: 'Order claimed', order });
+        res.json(order);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
     }
 };
 
+// Get order history
 exports.getOrderHistory = async (req, res) => {
     try {
-        const orders = await Order.find({ user: req.user.id }).populate('menu', 'name description').sort({ date: -1 });
+        const orders = await Order.find({ student: req.user.id }).populate('menu');
         res.json(orders);
     } catch (err) {
         console.error(err.message);
