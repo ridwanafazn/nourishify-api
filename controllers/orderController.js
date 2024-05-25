@@ -16,13 +16,20 @@ exports.claimOrder = async (req, res) => {
             return res.status(404).json({ msg: 'Menu not found' });
         }
 
+        if (menu.stock <= 0) {
+            return res.status(400).json({ msg: 'Menu out of stock' });
+        }
+
         const order = new Order({
             user: req.user.id,
             menu: menuId,
         });
 
         student.claimedToday = true;
+        menu.stock -= 1;
+
         await student.save();
+        await menu.save();
         await order.save();
 
         res.json({ msg: 'Order claimed', order });
@@ -34,7 +41,7 @@ exports.claimOrder = async (req, res) => {
 
 exports.getOrderHistory = async (req, res) => {
     try {
-        const orders = await Order.find({ user: req.user.id }).populate('menu', 'name description');
+        const orders = await Order.find({ user: req.user.id }).populate('menu', 'name description').sort({ date: -1 });
         res.json(orders);
     } catch (err) {
         console.error(err.message);
