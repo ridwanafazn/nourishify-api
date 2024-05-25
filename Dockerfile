@@ -14,16 +14,16 @@
 
 # CMD ["npm", "run", "start"]
 
-FROM node:18-slim
+FROM node:20
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm install --only=production
+RUN npm install
 
-COPY . ./
+COPY . .
 
-EXPOSE 5000
+ENV PORT=5000
 
 CMD ["npm", "run", "start"]
