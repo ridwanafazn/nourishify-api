@@ -37,8 +37,11 @@ exports.studentLogin = async (req, res) => {
 
 // View student profile
 exports.getStudentProfile = async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     try {
-        const student = await Student.findById(req.user.id).select('-password');
+        const student = await Student.findById(decoded.id).select('-password');
 
         if (!student) {
             return res.status(404).json({ msg: 'Student not found' });
@@ -53,10 +56,13 @@ exports.getStudentProfile = async (req, res) => {
 
 // Update student profile
 exports.updateStudentProfile = async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     const { name, gender, birthPlace, birthDate, school, major, class: studentClass } = req.body;
 
     try {
-        let student = await Student.findById(req.user.id);
+        let student = await Student.findById(decoded.id);
 
         if (!student) {
             return res.status(404).json({ msg: 'Student not found' });
@@ -72,7 +78,7 @@ exports.updateStudentProfile = async (req, res) => {
             class: studentClass
         };
 
-        student = await Student.findByIdAndUpdate(req.user.id, { $set: updateData }, { new: true }).select('-password');
+        student = await Student.findByIdAndUpdate(decoded.id, { $set: updateData }, { new: true }).select('-password');
 
         res.json(student);
     } catch (err) {
@@ -83,10 +89,13 @@ exports.updateStudentProfile = async (req, res) => {
 
 // Update student password
 exports.updateStudentPassword = async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     const { currentPassword, newPassword } = req.body;
 
     try {
-        let student = await Student.findById(req.user.id);
+        let student = await Student.findById(decoded.id);
 
         if (!student) {
             return res.status(404).json({ msg: 'Student not found' });
@@ -122,8 +131,11 @@ exports.getAvailableMenus = async (req, res) => {
 
 // Check claim status
 exports.checkClaimStatus = async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     try {
-        const student = await Student.findById(req.user.id);
+        const student = await Student.findById(decoded.id);
 
         if (!student) {
             return res.status(404).json({ msg: 'Student not found' });
@@ -138,10 +150,13 @@ exports.checkClaimStatus = async (req, res) => {
 
 // Claim menu
 exports.claimMenu = async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     const { menuId } = req.body;
 
     try {
-        const student = await Student.findById(req.user.id);
+        const student = await Student.findById(decoded.id);
 
         if (!student) {
             return res.status(404).json({ msg: 'Student not found' });
@@ -180,8 +195,11 @@ exports.claimMenu = async (req, res) => {
 
 // Get order history
 exports.getOrderHistory = async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     try {
-        const orders = await Order.find({ student: req.user.id }).populate('menu');
+        const orders = await Order.find({ student: decoded.id }).populate('menu');
 
         res.json(orders);
     } catch (err) {
