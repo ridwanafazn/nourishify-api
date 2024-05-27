@@ -2,3 +2,4 @@
 serviceaccountkey.json
 package-lock.json
 Dockerfile
+.env
