@@ -79,6 +79,18 @@ exports.claimOrderForStudent = async (req, res) => {
     }
 };
 
+
+// Get all menus
+exports.getAllMenus = async (req, res) => {
+    try {
+        const menus = await Menu.find();
+        res.json(menus);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+};
+
 // Update menu availability
 exports.updateMenuAvailability = async (req, res) => {
     const { menuId, isActive, stock } = req.body;
