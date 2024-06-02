@@ -12,7 +12,7 @@ const studentSchema = new mongoose.Schema({
     major: { type: String, required: false },
     class: { type: String, required: false },
     claimedToday: { type: Boolean, default: false },
-    lastClaimDate: { type: Date },
+    lastClaimDate: { type: Date, default: null },
 });
 
 studentSchema.pre('save', async function(next) {

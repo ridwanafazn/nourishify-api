@@ -141,12 +141,13 @@ exports.checkClaimStatus = async (req, res) => {
             return res.status(404).json({ msg: 'Student not found' });
         }
 
-        res.json({ claimedToday: student.claimedToday });
+        res.json({ lastClaimDate: student.lastClaimDate });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
     }
 };
+
 
 // Claim menu
 exports.claimMenu = async (req, res) => {
