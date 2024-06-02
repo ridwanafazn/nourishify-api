@@ -162,7 +162,11 @@ exports.claimMenu = async (req, res) => {
             return res.status(404).json({ msg: 'Student not found' });
         }
 
-        if (student.claimedToday) {
+        // Check if the student has already claimed today
+        const currentDate = new Date().toISOString().split('T')[0];
+        const lastClaimDate = student.lastClaimDate ? student.lastClaimDate.toISOString().split('T')[0] : null;
+
+        if (currentDate === lastClaimDate) {
             return res.status(400).json({ msg: 'You have already claimed a menu today' });
         }
 
@@ -183,7 +187,8 @@ exports.claimMenu = async (req, res) => {
         menu.stock -= 1;
         await menu.save();
 
-        student.claimedToday = true;
+        // Update the last claim date to today
+        student.lastClaimDate = new Date();
         await student.save();
 
         res.json({ msg: 'Menu claimed successfully', order: newOrder });
@@ -192,6 +197,7 @@ exports.claimMenu = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
+
 
 // Get order history
 exports.getOrderHistory = async (req, res) => {
