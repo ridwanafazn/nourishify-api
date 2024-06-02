@@ -11,7 +11,8 @@ const studentSchema = new mongoose.Schema({
     school: { type: String, required: false },
     major: { type: String, required: false },
     class: { type: String, required: false },
-    claimedToday: { type: Boolean, default: false }
+    claimedToday: { type: Boolean, default: false },
+    lastClaimDate: { type: Date },
 });
 
 studentSchema.pre('save', async function(next) {
